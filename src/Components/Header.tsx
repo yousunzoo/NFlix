@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { Link, useMatch } from "react-router-dom";
 
 const Nav = styled.div`
   display: flex;
@@ -34,7 +35,26 @@ const Items = styled.ul`
 `;
 const Item = styled.li`
   margin-right: 20px;
-  color: white;
+  color: ${(props) => props.theme.white.darker};
+  transition: color 0.3s ease-in-out;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  &:hover {
+    color: ${(props) => props.theme.white.lighter};
+  }
+`;
+const Circle = styled.span`
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: ${(props) => props.theme.red};
 `;
 const Search = styled.span`
   color: white;
@@ -55,6 +75,9 @@ const logoVarients = {
 };
 
 function Header() {
+  const homeMatch = useMatch("/");
+  const tvMatch = useMatch("tv");
+  console.log(homeMatch, tvMatch);
   return (
     <Nav>
       <Col>
@@ -72,8 +95,12 @@ function Header() {
           />
         </Logo>
         <Items>
-          <Item>Home</Item>
-          <Item>TV Shows</Item>
+          <Item>
+            <Link to="/">Home {homeMatch && <Circle />}</Link>
+          </Item>
+          <Item>
+            <Link to="tv">TV Shows {tvMatch && <Circle />}</Link>
+          </Item>
         </Items>
       </Col>
       <Col>
