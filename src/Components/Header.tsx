@@ -35,16 +35,14 @@ const Items = styled.ul`
 `;
 const Item = styled.li<{ scrolled: boolean }>`
   margin-right: 20px;
-  color: ${(props) =>
-    props.scrolled ? props.theme.white.darker : props.theme.black.darker};
+  color: ${(props) => props.theme.white.darker};
   transition: color 0.3s ease-in-out;
   position: relative;
   display: flex;
   justify-content: center;
   flex-direction: column;
   &:hover {
-    color: ${(props) =>
-      props.scrolled ? props.theme.white.lighter : props.theme.black.lighter};
+    color: ${(props) => props.theme.white.lighter};
   }
 `;
 const Circle = styled(motion.span)`
@@ -59,7 +57,7 @@ const Circle = styled(motion.span)`
   background-color: ${(props) => props.theme.red};
 `;
 const Search = styled.span<{ scrolled: boolean }>`
-  color: ${(props) => (props.scrolled ? "white" : "black")};
+  color: white;
   display: flex;
   align-items: center;
   position: relative;
@@ -85,7 +83,6 @@ const Input = styled(motion.input)<{ scrolled: boolean }>`
   padding: 5px 10px;
   padding-left: 40px;
   z-index: -1;
-  color: black;
   font-size: 16px;
   background-color: transparent;
   border: 1px solid ${(props) => (props.scrolled ? "white" : "black")};
