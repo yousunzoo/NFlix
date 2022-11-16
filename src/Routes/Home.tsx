@@ -43,27 +43,43 @@ const Slider = styled.div`
 const Row = styled(motion.div)`
   display: grid;
   gap: 5px;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, auto);
   position: absolute;
   width: 100%;
 `;
-const Box = styled(motion.div)<{ bgPhoto: string }>`
+const Box = styled(motion.div)`
   background-color: white;
-  background-image: url(${(props) => props.bgPhoto});
   background-size: cover;
   background-position: center center;
   height: 200px;
-  color: red;
-  font-size: 66px;
+  font-size: 0;
+  text-align: center;
   &:first-child {
     transform-origin: center left;
   }
   &:last-child {
     transform-origin: center right;
   }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0;
+  }
 `;
 
-const rowVarients = {
+const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  width: 100%;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+`;
+
+const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
   },
@@ -75,13 +91,22 @@ const rowVarients = {
   },
 };
 
-const BoxVarients = {
+const BoxVariants = {
   normal: {
     scale: 1,
   },
   hover: {
-    scale: 1.5,
-    y: -50,
+    scale: 1.3,
+    y: -80,
+    transition: {
+      delay: 0.5,
+      duration: 0.3,
+    },
+  },
+};
+const infoVariants = {
+  hover: {
+    opacity: 1,
     transition: {
       delay: 0.5,
       duration: 0.3,
@@ -122,7 +147,7 @@ function Home() {
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
-                variants={rowVarients}
+                variants={rowVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -134,14 +159,18 @@ function Home() {
                   .map((movie) => (
                     <Box
                       key={movie.id}
-                      variants={BoxVarients}
+                      variants={BoxVariants}
                       whileHover="hover"
                       initial="normal"
-                      transition={{ type: "tween" }}
-                      bgPhoto={makeImagePath(
-                        movie.backdrop_path,
-                        "w500"
-                      )}></Box>
+                      transition={{ type: "tween" }}>
+                      <img
+                        src={makeImagePath(movie.backdrop_path, "w500")}
+                        alt={movie.title}
+                      />
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
