@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { motion, useAnimation, useScroll } from "framer-motion";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -33,7 +34,7 @@ const Items = styled.ul`
   display: flex;
   align-items: center;
 `;
-const Item = styled.li<{ scrolled: boolean }>`
+const Item = styled.li`
   margin-right: 20px;
   color: ${(props) => props.theme.white.darker};
   transition: color 0.3s ease-in-out;
@@ -56,7 +57,7 @@ const Circle = styled(motion.span)`
   margin: auto;
   background-color: ${(props) => props.theme.red};
 `;
-const Search = styled.span<{ scrolled: boolean }>`
+const Search = styled.form`
   color: white;
   display: flex;
   align-items: center;
@@ -76,7 +77,7 @@ const logoVarients = {
     },
   },
 };
-const Input = styled(motion.input)<{ scrolled: boolean }>`
+const Input = styled(motion.input)`
   transform-origin: right center;
   position: absolute;
   right: 0px;
@@ -85,13 +86,18 @@ const Input = styled(motion.input)<{ scrolled: boolean }>`
   z-index: -1;
   font-size: 16px;
   background-color: transparent;
-  border: 1px solid ${(props) => (props.scrolled ? "white" : "black")};
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
 const navVariants = {
   top: { backgroundColor: "rgba(0,0,0,0)" },
   scroll: { backgroundColor: "rgba(0,0,0,1)" },
 };
+
+interface IForm {
+  keyword: string;
+}
+
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -125,7 +131,12 @@ function Header() {
       }
     });
   }, [scrollY, navAnimation]);
-
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    console.log(data);
+    navigate(`search?keyword=${data.keyword}`);
+  };
   return (
     <Nav variants={navVariants} animate={navAnimation} initial="top">
       <Col>
@@ -143,10 +154,10 @@ function Header() {
           />
         </Logo>
         <Items>
-          <Item scrolled={isScrolled}>
+          <Item>
             <Link to="/">Home {homeMatch && <Circle layoutId="circle" />}</Link>
           </Item>
-          <Item scrolled={isScrolled}>
+          <Item>
             <Link to="tv">
               TV Shows {tvMatch && <Circle layoutId="circle" />}
             </Link>
@@ -154,7 +165,7 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search scrolled={isScrolled}>
+        <Search onSubmit={handleSubmit(onValid)}>
           <label htmlFor="search">
             <motion.svg
               onClick={toggleSearch}
@@ -170,7 +181,7 @@ function Header() {
             </motion.svg>
           </label>
           <Input
-            scrolled={isScrolled}
+            {...register("keyword", { required: true, minLength: 2 })}
             id="search"
             animate={inputAnimation}
             initial={{ scaleX: 0 }}

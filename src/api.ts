@@ -8,6 +8,17 @@ interface IMovie {
   title: string;
   overview: string;
 }
+interface ITV {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: [];
+  id: number;
+  name: string;
+  overview: "string";
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
+}
 export interface IGetMoviesResult {
   dates: {
     maximum: string;
@@ -18,9 +29,26 @@ export interface IGetMoviesResult {
   total_pages: number;
   total_results: number;
 }
-
+export interface IGetTVsResult {
+  page: number;
+  results: ITV[];
+  total_pages: number;
+  total_results: number;
+}
 export function getMovies() {
-  return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
-    (response) => response.json()
-  );
+  return fetch(
+    `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((response) => response.json());
+}
+
+export function getTVs() {
+  return fetch(
+    `${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((response) => response.json());
+}
+
+export function getPopMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((response) => response.json());
 }
