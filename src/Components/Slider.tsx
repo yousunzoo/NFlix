@@ -190,7 +190,6 @@ function SliderArea(props: ISliderProps) {
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
-  console.log(data);
   return (
     <Wrapper>
       <Slider>
@@ -221,7 +220,7 @@ function SliderArea(props: ISliderProps) {
                     alt={program.title}
                   />
                   <Info variants={infoVariants}>
-                    <h4>{program.title}</h4>
+                    <h4>{program.name || program.title}</h4>
                   </Info>
                 </Box>
               ))}

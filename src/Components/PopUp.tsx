@@ -53,7 +53,7 @@ interface IPop {
 }
 
 function PopUp({ data, cate, links }: IPop) {
-  const bigMatch = useMatch(`/${links}/:id`);
+  const bigMatch = useMatch(`${links}/:id`);
   const navigate = useNavigate();
   const onOverlayClick = () => {
     navigate(-1);
@@ -62,6 +62,9 @@ function PopUp({ data, cate, links }: IPop) {
   const clickedProgram =
     bigMatch?.params.id &&
     data.find((program: any) => program.id + "" === bigMatch.params.id);
+
+  console.log(bigMatch);
+
   return bigMatch && clickedProgram ? (
     <>
       <Overlay
@@ -84,7 +87,7 @@ function PopUp({ data, cate, links }: IPop) {
                 )})`,
               }}
             />
-            <BigTitle>{clickedProgram.title}</BigTitle>
+            <BigTitle>{clickedProgram.title || clickedProgram.name}</BigTitle>
             <BigOverview>{clickedProgram.overview}</BigOverview>
           </>
         )}
