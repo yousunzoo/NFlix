@@ -74,6 +74,11 @@ export function getPopMovies() {
   ).then((response) => response.json());
 }
 
+export function getUpcomingMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((response) => response.json());
+}
 export function getSearch(keyword: string | null) {
   return fetch(
     `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=ko-KR&query=${keyword}&page=1&include_adult=false`

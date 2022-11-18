@@ -1,6 +1,11 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovies, getPopMovies, IGetMoviesResult } from "../api";
+import {
+  getMovies,
+  getPopMovies,
+  getUpcomingMovies,
+  IGetMoviesResult,
+} from "../api";
 import { makeImagePath } from "../utils";
 import Banner from "../Components/Banner";
 import SliderC from "../Components/Slider";
@@ -19,6 +24,7 @@ const SlideWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: clamp(8.25rem, 17.6vw, 22rem);
+  padding-block: 2%;
 `;
 
 function Home() {
@@ -28,10 +34,14 @@ function Home() {
     ["movies", "popular"],
     getPopMovies
   );
+  const { data: upcoming, isLoading: upLoading } = useQuery<IGetMoviesResult>(
+    ["movies", "upcoming"],
+    getUpcomingMovies
+  );
 
   return (
     <Wrapper>
-      {nowLoading || popLoading ? (
+      {nowLoading || popLoading || upLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
@@ -52,6 +62,13 @@ function Home() {
               program="movies"
               category="popular"
               results={popular?.results}
+            />
+
+            <SliderC
+              title="상영예정인 영화"
+              program="movies"
+              category="upcoming"
+              results={upcoming?.results}
             />
           </SlideWrapper>
         </>

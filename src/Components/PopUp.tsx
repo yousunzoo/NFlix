@@ -47,17 +47,21 @@ const BigOverview = styled.p`
 
 interface IPop {
   category: string;
-  clickedProgram: any;
   links: string;
+  data: any;
 }
 
-function PopUp({ clickedProgram, category, links }: IPop) {
+function PopUp({ data, category, links }: IPop) {
   const bigMatch = useMatch(`/${links}/:id`);
   const navigate = useNavigate();
   const onOverlayClick = () => navigate(-1);
   const { scrollY } = useScroll();
+  const clickedProgram =
+    bigMatch?.params.id &&
+    data.find((program: any) => program.id + "" === bigMatch.params.id);
+  console.log(clickedProgram);
 
-  return bigMatch ? (
+  return bigMatch && clickedProgram ? (
     <>
       <Overlay
         onClick={onOverlayClick}
@@ -74,7 +78,7 @@ function PopUp({ clickedProgram, category, links }: IPop) {
             <BigCover
               style={{
                 backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                  clickedProgram.backdrop_path,
+                  clickedProgram.background_path,
                   "w500"
                 )})`,
               }}
