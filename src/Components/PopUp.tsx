@@ -2,6 +2,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { motion, useScroll } from "framer-motion";
 import { makeImagePath } from "../utils";
+import { useState } from "react";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -46,21 +47,21 @@ const BigOverview = styled.p`
 `;
 
 interface IPop {
-  category: string;
+  cate: string;
   links: string;
   data: any;
 }
 
-function PopUp({ data, category, links }: IPop) {
+function PopUp({ data, cate, links }: IPop) {
   const bigMatch = useMatch(`/${links}/:id`);
   const navigate = useNavigate();
-  const onOverlayClick = () => navigate(-1);
+  const onOverlayClick = () => {
+    navigate(-1);
+  };
   const { scrollY } = useScroll();
   const clickedProgram =
     bigMatch?.params.id &&
     data.find((program: any) => program.id + "" === bigMatch.params.id);
-  console.log(clickedProgram);
-
   return bigMatch && clickedProgram ? (
     <>
       <Overlay
@@ -72,13 +73,13 @@ function PopUp({ data, category, links }: IPop) {
         style={{
           top: scrollY.get() + 100,
         }}
-        layoutId={bigMatch?.params.id + category}>
+        layoutId={bigMatch?.params.id + cate}>
         {clickedProgram && (
           <>
             <BigCover
               style={{
                 backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                  clickedProgram.background_path,
+                  clickedProgram.backdrop_path,
                   "w500"
                 )})`,
               }}

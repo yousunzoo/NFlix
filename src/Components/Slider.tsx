@@ -160,15 +160,14 @@ const offset = 5;
 
 function SliderArea(props: ISliderProps) {
   const navigate = useNavigate();
-  const bigMatch = useMatch(`/${props.program}/:id`);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [back, setBack] = useState(false);
-  const { scrollY } = useScroll();
+  const [category, setCategory] = useState("");
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onOverlayClick = () => navigate(-1);
-  const onBoxClicked = (programId: number) => {
+  const onBoxClicked = (programId: number, programCate: string) => {
     navigate(`/${props.program}/${programId}`);
+    setCategory(programCate);
   };
   const data = props.results;
   const increaseIndex = () => {
@@ -191,10 +190,7 @@ function SliderArea(props: ISliderProps) {
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
-
-  const clickedProgram =
-    bigMatch?.params.id &&
-    data.find((program: any) => program.id + "" === bigMatch.params.id);
+  console.log(data);
   return (
     <Wrapper>
       <Slider>
@@ -214,12 +210,12 @@ function SliderArea(props: ISliderProps) {
               .map((program: any) => (
                 <Box
                   layoutId={program.id + props.category}
-                  key={program.id + props.category}
+                  key={program.id + props.program}
                   variants={BoxVariants}
                   whileHover="hover"
                   initial="normal"
                   transition={{ type: "tween" }}
-                  onClick={() => onBoxClicked(program.id)}>
+                  onClick={() => onBoxClicked(program.id, props.category)}>
                   <img
                     src={makeImagePath(program.backdrop_path, "w500")}
                     alt={program.title}
@@ -262,11 +258,7 @@ function SliderArea(props: ISliderProps) {
       </Slider>
 
       <AnimatePresence>
-        <PopUp
-          data={props.results}
-          links={props.program}
-          category={props.category}
-        />
+        <PopUp data={props.results} links={props.program} cate={category} />
       </AnimatePresence>
     </Wrapper>
   );
