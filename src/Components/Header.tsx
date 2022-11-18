@@ -86,6 +86,7 @@ const Input = styled(motion.input)`
   z-index: -1;
   font-size: 16px;
   background-color: transparent;
+  color: white;
   border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
@@ -103,6 +104,7 @@ function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("tv");
+  const searchMatch = useMatch("search");
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll();
@@ -160,6 +162,11 @@ function Header() {
           <Item>
             <Link to="tv">
               TV Shows {tvMatch && <Circle layoutId="circle" />}
+            </Link>
+          </Item>
+          <Item>
+            <Link to="search">
+              Search {searchMatch && <Circle layoutId="circle" />}
             </Link>
           </Item>
         </Items>

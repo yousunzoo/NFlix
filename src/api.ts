@@ -14,10 +14,24 @@ interface ITV {
   genre_ids: [];
   id: number;
   name: string;
-  overview: "string";
+  overview: string;
   poster_path: string;
   vote_average: number;
   vote_count: number;
+}
+
+interface ISearch {
+  id: number;
+  backdrop_path: string;
+  genre_ids: [];
+  media_type: string;
+  title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  first_air_date: string;
+  name: string;
 }
 export interface IGetMoviesResult {
   dates: {
@@ -32,6 +46,13 @@ export interface IGetMoviesResult {
 export interface IGetTVsResult {
   page: number;
   results: ITV[];
+  total_pages: number;
+  total_results: number;
+}
+
+export interface IGetSearchResult {
+  page: number;
+  results: ISearch[];
   total_pages: number;
   total_results: number;
 }
@@ -50,5 +71,11 @@ export function getTVs() {
 export function getPopMovies() {
   return fetch(
     `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((response) => response.json());
+}
+
+export function getSearch(keyword: string | null) {
+  return fetch(
+    `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=ko-KR&query=${keyword}&page=1&include_adult=false`
   ).then((response) => response.json());
 }

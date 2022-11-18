@@ -1,10 +1,7 @@
-import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getMovies, getPopMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
-import { useState } from "react";
-import { useMatch, useNavigate } from "react-router-dom";
 import Banner from "../Components/Banner";
 import SliderC from "../Components/Slider";
 
