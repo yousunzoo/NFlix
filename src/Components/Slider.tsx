@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { makeImagePath } from "../utils";
+import PopUp from "./PopUp";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -207,6 +208,7 @@ function SliderArea(props: ISliderProps) {
   const [back, setBack] = useState(false);
   const { scrollY } = useScroll();
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onOverlayClick = () => navigate(-1);
   const onBoxClicked = (programId: number) => {
     navigate(`/${props.program}/${programId}`);
   };
@@ -232,7 +234,6 @@ function SliderArea(props: ISliderProps) {
     }
   };
 
-  const onOverlayClick = () => navigate(-1);
   const clickedProgram =
     bigMatch?.params.id &&
     data.find((program: any) => program.id + "" === bigMatch.params.id);
@@ -301,36 +302,13 @@ function SliderArea(props: ISliderProps) {
           </Button>
         </ButtonArea>
       </Slider>
+
       <AnimatePresence>
-        {bigMatch ? (
-          <>
-            <Overlay
-              onClick={onOverlayClick}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-            <BigMovie
-              style={{
-                top: scrollY.get() + 100,
-              }}
-              layoutId={bigMatch.params.id + props.category}>
-              {clickedProgram && (
-                <>
-                  <BigCover
-                    style={{
-                      backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                        clickedProgram.backdrop_path,
-                        "w500"
-                      )})`,
-                    }}
-                  />
-                  <BigTitle>{clickedProgram.title}</BigTitle>
-                  <BigOverview>{clickedProgram.overview}</BigOverview>
-                </>
-              )}
-            </BigMovie>
-          </>
-        ) : null}
+        <PopUp
+          clickedProgram={clickedProgram}
+          links={props.program}
+          category={props.category}
+        />
       </AnimatePresence>
     </Wrapper>
   );

@@ -1,9 +1,10 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { useLocation, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getSearch, IGetSearchResult } from "../api";
 import { makeImagePath } from "../utils";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -71,6 +72,48 @@ const Info = styled(motion.div)`
   }
 `;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
+const BigMovie = styled(motion.div)`
+  position: absolute;
+  width: 40vw;
+  height: 80vh;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 10;
+  background-color: ${(props) => props.theme.black.lighter};
+  border-radius: 15px;
+  overflow: hidden;
+`;
+
+const BigCover = styled.div`
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center center;
+`;
+const BigTitle = styled.h3`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 10px;
+  font-size: 46px;
+  position: relative;
+  top: -60px;
+`;
+const BigOverview = styled.p`
+  padding: 20px;
+  position: relative;
+  top: -60px;
+  color: ${(props) => props.theme.white.lighter};
+`;
+
 const BoxVariants = {
   normal: {
     scale: 1,
@@ -95,15 +138,30 @@ const infoVariants = {
 };
 
 function Search() {
+  const navigate = useNavigate();
   const location = useLocation();
+  const { scrollY } = useScroll();
+  const [leaving, setLeaving] = useState(false);
   const keyword = new URLSearchParams(location.search).get("keyword");
   const { data, isLoading } = useQuery<IGetSearchResult>(
     ["search", keyword],
     () => getSearch(keyword)
   );
-  console.log(keyword);
   const movies = data?.results.filter((data) => data.media_type === "movie");
   const tvs = data?.results.filter((data) => data.media_type === "tv");
+  const bigMatch = useMatch(`/:id`);
+  const onBoxClicked = (programId: number) => {
+    navigate(`/${programId}`);
+  };
+  const onOverlayClick = () => navigate(-1);
+  const clickedProgram =
+    bigMatch?.params.id &&
+    data?.results.find(
+      (program: any) => program.id + "" === bigMatch.params.id
+    );
+
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+
   return (
     <Wrapper>
       {keyword ? (
@@ -115,24 +173,23 @@ function Search() {
               <CategoryTitle>"{keyword}" 키워드를 포함하는 영화</CategoryTitle>
               <Row>
                 {movies?.map((program) => (
-                  <AnimatePresence>
-                    <Box
-                      key={program.id}
-                      variants={BoxVariants}
-                      whileHover="hover"
-                      initial="normal"
-                      transition={{ type: "tween" }}
-                      style={{
-                        backgroundImage: ` url(${makeImagePath(
-                          program.backdrop_path || program.poster_path,
-                          "w500"
-                        )})`,
-                      }}>
-                      <Info variants={infoVariants}>
-                        <h4>{program.title}</h4>
-                      </Info>
-                    </Box>
-                  </AnimatePresence>
+                  <Box
+                    key={program.id}
+                    variants={BoxVariants}
+                    whileHover="hover"
+                    initial="normal"
+                    transition={{ type: "tween" }}
+                    onClick={() => onBoxClicked(program.id)}
+                    style={{
+                      backgroundImage: ` url(${makeImagePath(
+                        program.backdrop_path || program.poster_path,
+                        "w500"
+                      )})`,
+                    }}>
+                    <Info variants={infoVariants}>
+                      <h4>{program.title}</h4>
+                    </Info>
+                  </Box>
                 ))}
               </Row>
             </Category>
@@ -142,24 +199,23 @@ function Search() {
               </CategoryTitle>
               <Row>
                 {tvs?.map((program) => (
-                  <AnimatePresence>
-                    <Box
-                      key={program.id}
-                      variants={BoxVariants}
-                      whileHover="hover"
-                      initial="normal"
-                      transition={{ type: "tween" }}
-                      style={{
-                        backgroundImage: ` url(${makeImagePath(
-                          program.backdrop_path || program.poster_path,
-                          "w500"
-                        )})`,
-                      }}>
-                      <Info variants={infoVariants}>
-                        <h4>{program.name}</h4>
-                      </Info>
-                    </Box>
-                  </AnimatePresence>
+                  <Box
+                    key={program.id}
+                    variants={BoxVariants}
+                    whileHover="hover"
+                    initial="normal"
+                    transition={{ type: "tween" }}
+                    onClick={() => onBoxClicked(program.id)}
+                    style={{
+                      backgroundImage: ` url(${makeImagePath(
+                        program.backdrop_path || program.poster_path,
+                        "w500"
+                      )})`,
+                    }}>
+                    <Info variants={infoVariants}>
+                      <h4>{program.name}</h4>
+                    </Info>
+                  </Box>
                 ))}
               </Row>
             </Category>
